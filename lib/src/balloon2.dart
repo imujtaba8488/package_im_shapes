@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// A balloon widget that can be used in a variety of situations. For example, it can be used to display images, icons using a Stack widget, by placing the balloon widget at the bottom of the stack. However, keep in mind that using it in certain places might require it to assign size constraints.
+/// A balloon widget that can be used in a variety of situations. For example, it can be used to display images, icons using a Stack widget, by placing the balloon widget at the bottom of the stack. 
+/// 
+/// __Note: Keep in mind that using it in certain places might require it to assign size constraints. For example, when placing inside a `Row` or a `Column`, if not assigned exact dimensions i.e. height and width by wrapping inside a `Container`, etc, ensure to put it inside an `Expanded` widget.__
 class Balloon2 extends StatelessWidget {
   /// The color of the belly and neck of the balloon.
   final Color bodyColor;
