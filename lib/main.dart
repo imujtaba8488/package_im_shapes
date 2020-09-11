@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:im_shapes/src/icon_balloon.dart';
+import 'package:im_shapes/src/inflater.dart';
 
 import 'im_shapes.dart';
 
@@ -11,8 +13,29 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  int selectedIndex = 0;
+class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation animation;
+
+  bool inflated = false;
+
+  @override
+  void initState() {
+    controller = AnimationController(
+      duration: Duration(seconds: 1),
+      vsync: this,
+    )..addListener(() {
+        setState(() {});
+      });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +44,8 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('Icon Stepper Example'),
         ),
-        body: DottedLine(),
+        // body: Inflater(),
+        body: Balloon2(),
       ),
     );
   }
