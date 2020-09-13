@@ -1,133 +1,115 @@
 import 'package:flutter/material.dart';
 
-/// A widget which displays its child within a balloon shape.
-///
-/// __Note:__ It is the sole responsibility of the class user to appropriately size the child placed within the balloon, as the size of the child does not automatically resize the balloon, as it is controlled by its [radius] property.
+/// A balloon widget that can be used in a variety of situations. For example, it can be used to display images, icons using a Stack widget, by placing the balloon widget at the bottom of the stack. 
+/// 
+/// __Note: Keep in mind that using it in certain places might require it to assign size constraints. For example, when placing inside a `Row` or a `Column`, if not assigned exact dimensions i.e. height and width by wrapping inside a `Container`, etc, ensure to put it inside an `Expanded` widget.__
 class Balloon extends StatelessWidget {
-  /// Determines how big a balloon should be.
-  final double radius;
+  /// The color of the belly and neck of the balloon.
+  final Color bodyColor;
 
-  /// The color of the balloon and it's string.
-  final Color color;
+  /// The color of the string attached to the balloon.
+  final Color stringColor;
 
-  /// The child to be placed within the balloon.
-  ///
-  /// __Note:__ child must be set to appropriate size by the class user in order to prevent it from overflowing.
-  final Widget child;
-
-  Balloon({
-    this.radius = 48.0,
-    this.color = Colors.blue,
-    this.child,
-  }) {
-    assert(radius > 0.0, 'Radius must be greater than 0.0');
-  }
+  Balloon({this.bodyColor = Colors.red, this.stringColor = Colors.red});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _BalloonPainter(
-        extraHeight: radius,
-        color: color,
-      ),
-      child: Container(
-        /// Width and hieght must be given in order to prevent the shape from overflowing.
-        width: radius,
-        height: radius,
-        alignment: Alignment.center,
-
-        // Note: If the bottom margin is not set to extra height (radius in this case), the balloon lower belly and string will not appear.
-        margin: EdgeInsets.only(
-          bottom: radius,
+    /// It is important to wrap AspectRatio within Align (as per the official doc) to avoid error such as when wrapped within expanded, stack, etc.
+    return Align(
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: CustomPaint(
+          size: Size.infinite,
+          painter: _BalloonPainter(
+            bodyColor: bodyColor,
+            stringColor: stringColor,
+          ),
         ),
-        child: child,
       ),
     );
   }
 }
 
-/// The painter which paints the balloon shape.
+/// Painter that paints the balloon.
 ///
-/// The balloon consists of two parts: belly and the string. The idea is to first draw a circle which forms the upper belly of the balloon, then use beziers to draw the lower belly of the balloon, and finally draw a vertical line to represent the balloon string.
+/// The idea here is that the CustomPaint object passes canvas with infinite size wrapped inside a aspect ratio of 1, making it a square. This square is divided into four regions to contain four parts of the balloon, i.e. the upper belly, lower belly, the neck, and the string. First a circle is used to draw the upper belly of the balloon, then beziers are used to draw the lower belly, then lines are used to draw the neck and finally again a bezier is used to draw the balloon string.
 class _BalloonPainter extends CustomPainter {
-  /// The color of the shape.
-  final Color color;
+  /// The paint for the belly and the neck.
+  Paint _bodyPaint;
 
-  /// The height in addition to the height of the child, which is used to accomodate the balloon lower belly and the string.
-  double extraHeight;
-
-  /// The paint brush used to draw the shape.
-  Paint _paintBrush;
+  /// The paint for the string attached to the balloon.
+  Paint _stringPaint;
 
   _BalloonPainter({
-    this.color = Colors.blue,
-    @required this.extraHeight,
-  }) : _paintBrush = Paint()
-          ..style = PaintingStyle.fill
-          ..color = color
-          ..strokeWidth = 2.0;
+    Color bodyColor = Colors.red,
+    Color stringColor = Colors.red,
+  }) {
+    _bodyPaint = Paint()
+      ..color = bodyColor
+      ..style = PaintingStyle.fill
+      ..strokeWidth = 2.0;
+
+    _stringPaint = Paint()
+      ..color = stringColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
-    // The radius of the upper belly of the balloon.
-    double radius = size.width / 2;
+    // Center pushed up along y-axis to leave room for the lower belly, neck and string of the balloon, hence, 'size.height / 3.0'.
+    Offset center = Offset(size.width / 2.0, size.height / 3.0);
 
-    // Calculate the upper belly center by subtracting the extraHeight (space used for lower belly and the string) from the total height (height of the child plus the extraHeight for lower belly and the string) and then divide it by 2.
-    Offset upperBellyCenter = Offset(
-      size.width / 2.0,
-      (size.height - extraHeight) / 2.0,
-    );
+    // Radius chosen as such to fit inside the size passed by the CustomPaint.
+    double radius = size.width / 3.1;
 
-    // Draw order is important.
-    _drawUpperBelly(canvas, upperBellyCenter, radius, color);
-    _drawLowerBelly(canvas, size, radius, color);
-    _drawString(canvas, size);
-  }
-
-  /// Draws the upper bolloon belly.
-  void _drawUpperBelly(
-    Canvas canvas,
-    Offset center,
-    double radius,
-    Color color,
-  ) {
+    // Draw upper belly.
     canvas.drawCircle(
       center,
       radius,
-      _paintBrush,
+      _bodyPaint,
     );
-  }
 
-  /// Draws the lower balloon belly.
-  void _drawLowerBelly(Canvas canvas, Size size, double radius, Color color) {
+    // Draw lower belly.
     Path path = Path()
-      ..moveTo(0.0, (size.height - extraHeight) / 2)
+      ..moveTo((size.width / 2 - radius), center.dy)
+      // ..lineTo(size.width / 2, size.height * 0.8);
       ..quadraticBezierTo(
-        0.0,
-        size.height / 2,
-        size.width / 2.0,
-        size.height / 1.3,
+        radius / 1.8,
+        size.height / 1.8,
+        size.width / 2,
+        size.height * 0.8,
       )
       ..quadraticBezierTo(
-        size.width,
-        size.height / 2.0,
-        size.width,
-        (size.height - extraHeight) / 2,
+        size.width - (radius / 1.8),
+        size.height / 1.8,
+        radius * 2.55,
+        size.height / 3.0,
       );
 
-    canvas.drawPath(
-      path,
-      _paintBrush,
-    );
-  }
+    canvas.drawPath(path, _bodyPaint);
 
-  /// Draws the string attached to the lower belly of the balloon.
-  void _drawString(Canvas canvas, Size size) {
-    canvas.drawLine(
-      Offset(size.width / 2.0, size.height / 1.31),
-      Offset(size.width / 2.0, size.height),
-      _paintBrush,
-    );
+    // Draw neck.
+    Path path2 = Path()
+      ..moveTo(size.width / 2.0, size.height * 0.8)
+      ..lineTo(size.width / 2.1, size.height * 0.82)
+      ..moveTo(size.width / 2.0, size.height * 0.8)
+      ..lineTo(size.width / 1.92, size.height * 0.82)
+      ..lineTo(size.width / 2.1, size.height * 0.82);
+
+    canvas.drawPath(path2, _bodyPaint);
+
+    // Draw string
+    Path path3 = Path()
+      ..moveTo(size.width / 2.0, size.height * 0.82)
+      ..quadraticBezierTo(
+        size.width / 2.2,
+        size.height * 0.85,
+        size.width / 2.0,
+        size.height * 0.9,
+      );
+
+    canvas.drawPath(path3, _stringPaint);
   }
 
   @override

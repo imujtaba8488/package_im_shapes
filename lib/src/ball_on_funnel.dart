@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
 
 /// A basic shape representing a ball on a funnel. Typically, the ball may contain an Icon or an Image, while as, the funnel may point to some other widget.
-/// 
+///
 /// __Note:__ When placed inside a `Row` or a `Column` with unconstrained size, ensure to wrap the shape within an `Expanded` widget.
 class BallOnFunnel extends StatelessWidget {
+  /// The color of the shape.
+  final Color color;
+
+  /// The width of the funnel pipe.
+  final double funnelPipeWidth;
+
+  BallOnFunnel({this.color = Colors.deepPurple, this.funnelPipeWidth = 1.0});
+
   @override
   Widget build(BuildContext context) {
-    /// It is important to wrap AspectRatio within Align (as per the official doc) to avoid error such as when wrapped within expanded, stack, etc.
+    /// It is important to wrap AspectRatio within Align (as per the official doc) to avoid errors such as when wrapped within expanded, stack, etc.
     return Align(
       child: AspectRatio(
         aspectRatio: 1,
         child: CustomPaint(
           size: Size.infinite,
-          painter: BallOnFunnelPainter(),
+          painter: _BallOnFunnelPainter(
+            color: color,
+            funnelPipeWidth: funnelPipeWidth,
+          ),
         ),
       ),
     );
@@ -22,11 +33,11 @@ class BallOnFunnel extends StatelessWidget {
 /// Painter that paints the Ball on a Funnel.
 ///
 /// The idea here is that the CustomPaint object passes canvas with infinite size wrapped inside a aspect ratio of 1, making it a square. This square is divided into three regions to contain three parts of the ball and funnel, i.e. the ball, funnel neck, and the funnel pipe. First a circle is used to draw the ball, then lines are used to draw the funnel neck, and then finally a straight line represents the funnel pipe, who's width can be customized.
-class BallOnFunnelPainter extends CustomPainter {
+class _BallOnFunnelPainter extends CustomPainter {
   /// The paint to apply to the shape.
   Paint _paint;
 
-  BallOnFunnelPainter({
+  _BallOnFunnelPainter({
     Color color = Colors.purple,
     double funnelPipeWidth = 1.0,
   }) {

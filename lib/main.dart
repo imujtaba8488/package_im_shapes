@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:im_shapes/src/mission_box.dart';
-import 'package:im_shapes/src/ball_on_funnel.dart';
 
 import 'im_shapes.dart';
 
@@ -52,19 +50,29 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
               Row(
                 children: [
                   Expanded(
-                    child: BallOnFunnel(),
+                    child: BallOnFunnel(
+                      color: Colors.orange,
+                    ),
                   ),
                   Expanded(
-                    child: BallOnFunnel(),
+                    child: BallOnFunnel(
+                      color: Colors.green,
+                    ),
                   ),
                   Expanded(
-                    child: BallOnFunnel(),
+                    child: BallOnFunnel(
+                      color: Colors.amber,
+                    ),
                   ),
                   Expanded(
-                    child: BallOnFunnel(),
+                    child: BallOnFunnel(
+                      color: Colors.black,
+                    ),
                   ),
                   Expanded(
-                    child: BallOnFunnel(),
+                    child: BallOnFunnel(
+                      color: Colors.pink,
+                    ),
                   ),
                   
                 ],
