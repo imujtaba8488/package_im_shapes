@@ -4,15 +4,19 @@ import 'package:flutter/material.dart';
 
 typedef _Coordinates = void Function(List<double> x, List<double> y);
 
+/// Todo: Soften the edges.
+/// Todo: Arrangments can be combined.
 class ShapesFromCircle extends StatelessWidget {
   final Paint brush;
   final int numberOfSectors;
   final bool showGuides;
+  final Arrangement arrangement;
 
   ShapesFromCircle({
     this.brush,
     this.numberOfSectors = 3,
     this.showGuides = false,
+    this.arrangement = Arrangement.drawLinesALongCircumference,
   });
 
   @override
@@ -27,6 +31,7 @@ class ShapesFromCircle extends StatelessWidget {
             brush: brush,
             numberOfSectors: numberOfSectors,
             showGuides: showGuides,
+            arrangement: arrangement,
           ),
         ),
       ),
@@ -39,13 +44,13 @@ class _ShapePainter extends CustomPainter {
   Paint brush;
   final int numberOfSectors;
   final bool showGuides;
-  final Connections connections;
+  final Arrangement arrangement;
 
   _ShapePainter({
     this.brush,
     this.numberOfSectors = 3,
     this.showGuides = false,
-    this.connections = Connections._drawLinesALongCircumference,
+    this.arrangement = Arrangement.drawLinesALongCircumference,
   }) {
     brush ??= Paint()
       ..color = Colors.blue
@@ -55,9 +60,17 @@ class _ShapePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    switch (connections) {
-      case Connections._drawLinesFromCenter:
+    switch (arrangement) {
+      case Arrangement.drawLinesFromCenter:
         _joinPointsFromCenter(canvas, size);
+        break;
+
+      case Arrangement.drawLinesFromOrigin:
+        _joinPointsFromOrigin(canvas, size);
+        break;
+
+      case Arrangement.drawLinesFromTopCenter:
+        _jointPointsFromTopCenter(canvas, size);
         break;
 
       default:
@@ -97,10 +110,8 @@ class _ShapePainter extends CustomPainter {
     canvas.drawPath(path, brush);
   }
 
-  /// Draws lines from center to sector coordinates. ![test](https://github.com/imujtaba8488/showcase/blob/master/im_stepper/image_stepper_02.gif)
+  /// Draws lines from center to sector coordinates.
   void _joinPointsFromCenter(Canvas canvas, Size size) {
-    Path path = Path();
-
     sectorPointCoordinates(
       numberOfSectors: numberOfSectors,
       center: size.center(Offset(0.0, 0.0)),
@@ -118,8 +129,42 @@ class _ShapePainter extends CustomPainter {
         }
       },
     );
+  }
 
-    canvas.drawPath(path, brush);
+  void _joinPointsFromOrigin(Canvas canvas, Size size) {
+    sectorPointCoordinates(
+      numberOfSectors: numberOfSectors,
+      center: size.center(Offset(0.0, 0.0)),
+      radius: size.width / 2,
+      coordinates: (xCoordinate, yCoordinate) {
+        // Draw lines from origin radiating towards the sector coordinates.
+        for (int i = 0; i < numberOfSectors; i++) {
+          canvas.drawLine(
+            Offset(0.0, 0.0),
+            Offset(xCoordinate[i], yCoordinate[i]),
+            brush,
+          );
+        }
+      },
+    );
+  }
+
+  void _jointPointsFromTopCenter(Canvas canvas, Size size) {
+    sectorPointCoordinates(
+      numberOfSectors: numberOfSectors,
+      center: size.center(Offset(0.0, 0.0)),
+      radius: size.width / 2,
+      coordinates: (xCoordinate, yCoordinate) {
+        // Draw lines from origin radiating towards the sector coordinates.
+        for (int i = 0; i < numberOfSectors; i++) {
+          canvas.drawLine(
+            Offset(size.width / 2, 0.0),
+            Offset(xCoordinate[i], yCoordinate[i]),
+            brush,
+          );
+        }
+      },
+    );
   }
 
   /// Draws the circle guide.
@@ -212,7 +257,9 @@ class _ShapePainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
-enum Connections {
-  _drawLinesALongCircumference,
-  _drawLinesFromCenter,
+enum Arrangement {
+  drawLinesALongCircumference,
+  drawLinesFromCenter,
+  drawLinesFromOrigin,
+  drawLinesFromTopCenter,
 }
