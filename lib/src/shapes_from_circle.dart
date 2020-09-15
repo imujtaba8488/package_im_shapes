@@ -106,12 +106,29 @@ class _ShapePainter extends CustomPainter {
         path.moveTo(xCoordinate[0], yCoordinate[0]);
 
         // Connect coordinates by drawing lines along the circumference.
-        for (int i = 0; i < numberOfSectors; i++) {
-          path..lineTo(xCoordinate[i], yCoordinate[i]);
+        for (int i = 1; i < numberOfSectors; i++) {
+          path
+            ..quadraticBezierTo(
+              size.width * 0.5,
+              size.height * 0.5,
+              xCoordinate[i],
+              yCoordinate[i],
+            );
         }
 
-        // Close path draws the last line by connecting the last coordinate with the initial coordinate.
-        path.close();
+        // Move to the final coordinate.
+        path.moveTo(
+          xCoordinate[numberOfSectors - 1],
+          yCoordinate[numberOfSectors - 1],
+        );
+
+        // Connect the final coordinate with the initial coordinate. Could be achieved by simply closing the path, however, that draws a straight line and not a bezier.
+        path.quadraticBezierTo(
+          size.width / 2,
+          size.height / 2,
+          xCoordinate[0],
+          yCoordinate[0],
+        );
       },
     );
 
@@ -235,10 +252,10 @@ class _ShapePainter extends CustomPainter {
     @required double radius,
     _Coordinates coordinates,
   }) {
-    assert(
-      numberOfSectors >= 3,
-      'numberOfSectors must be greater than or equal to 3',
-    );
+    // assert(
+    //   numberOfSectors >= 3,
+    //   'numberOfSectors must be greater than or equal to 3',
+    // );
 
     double degrees = 0;
 
