@@ -6,10 +6,18 @@ typedef _Coordinates = void Function(List<double> x, List<double> y);
 
 /// Todo: Soften the edges.
 /// Todo: Arrangments can be combined.
+/// A widget that generates shapes by dividing a circle into sectors. The coordinates of these sectors are calculated and then they are joined based on the [arrangement].
 class ShapesFromCircle extends StatelessWidget {
+  /// The paint brush to be used for the shapes.
   final Paint brush;
+
+  /// Total number of sectors the circle needs to be divided into. Must be greater than or equal to 3.
   final int numberOfSectors;
+
+  /// Whether to show circle, etc guides or not.
   final bool showGuides;
+
+  /// Defines how the coordinates of sectors should be connected.
   final Arrangement arrangement;
 
   ShapesFromCircle({
@@ -257,9 +265,17 @@ class _ShapePainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
+/// Determines the manner in which the coordinates of the sectors of the circle should be connected.
 enum Arrangement {
+  /// Straight lines connect the sector coordinates along the circumference of the cricle.
   drawLinesALongCircumference,
+
+  /// Straight lines connect the sector coordinates from the center of the circle.
   drawLinesFromCenter,
+
+  /// Straight lines connect the sector coordinates from the origin of the canvas.
   drawLinesFromOrigin,
+
+  /// Straight lines connect the sector coordinates from the topCenter of the canvas.
   drawLinesFromTopCenter,
 }

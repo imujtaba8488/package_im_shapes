@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
             child: ShapesFromCircle(
                 numberOfSectors: 10,
                 showGuides: true,
-                arrangement: Arrangement.drawLinesFromTopCenter,
+                arrangement: Arrangement.drawLinesALongCircumference,
                 brush: Paint()
                   ..strokeWidth = 0.0
                   ..style = PaintingStyle.fill
