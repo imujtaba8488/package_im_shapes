@@ -102,33 +102,14 @@ class _ShapePainter extends CustomPainter {
       center: size.center(Offset(0.0, 0.0)),
       radius: size.width / 2,
       coordinates: (xCoordinate, yCoordinate) {
-        // Move to the initial coordinate.
-        path.moveTo(xCoordinate[0], yCoordinate[0]);
+        Path path = Path()..moveTo(xCoordinate[0], yCoordinate[0]);
 
-        // Connect coordinates by drawing lines along the circumference.
         for (int i = 1; i < numberOfSectors; i++) {
-          path
-            ..quadraticBezierTo(
-              size.width * 0.5,
-              size.height * 0.5,
-              xCoordinate[i],
-              yCoordinate[i],
-            );
+          path.lineTo(xCoordinate[i], yCoordinate[i]);
         }
 
-        // Move to the final coordinate.
-        path.moveTo(
-          xCoordinate[numberOfSectors - 1],
-          yCoordinate[numberOfSectors - 1],
-        );
-
-        // Connect the final coordinate with the initial coordinate. Could be achieved by simply closing the path, however, that draws a straight line and not a bezier.
-        path.quadraticBezierTo(
-          size.width / 2,
-          size.height / 2,
-          xCoordinate[0],
-          yCoordinate[0],
-        );
+        path.close();
+        canvas.drawPath(path, brush);
       },
     );
 
@@ -279,7 +260,15 @@ class _ShapePainter extends CustomPainter {
   double toRadians(double angle) => angle * math.pi / 180;
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    // od stands for OldDelegate.
+    _ShapePainter od = oldDelegate as _ShapePainter;
+
+    return od.brush != brush ||
+        od.numberOfSectors != numberOfSectors ||
+        od.arrangement != arrangement ||
+        od.showGuides != showGuides;
+  }
 }
 
 /// Determines the manner in which the coordinates of the sectors of the circle should be connected.
