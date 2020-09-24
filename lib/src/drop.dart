@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'dart:math' as math;
-
 class Drop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
