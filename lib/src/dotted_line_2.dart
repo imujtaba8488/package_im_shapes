@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:im_shapes/src/custom_painter_util/im_util.dart';
 
 class DottedLine2 extends StatelessWidget {
   final double radius;
@@ -32,20 +33,20 @@ class DottedLine2Painter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-
+    // Translate so that the circle doesn't go off the screen.
     canvas.translate(radius, radius);
 
-    double diameter = radius + radius + space;
+    Circle circle = Circle(
+      radius: radius,
+      center: size.center(Offset(0.0, 0.0)),
+    );
 
-    int numberOfDots = (size.width / diameter).round();
-
-    print('width: ${size.width}');
-    print(numberOfDots);
+    int numberOfDots = (size.width / (circle.diameter + space)).round();
 
     for (int i = 0; i < numberOfDots; i++) {
       canvas.drawCircle(
-        Offset(diameter * i, 0.0),
-        radius,
+        Offset((circle.diameter + space) * i, 0.0),
+        circle.radius,
         Paint()..color = color,
       );
     }

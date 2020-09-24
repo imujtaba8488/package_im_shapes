@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:im_shapes/src/drop.dart';
 
-import 'src/custom_painter_util/im_util.dart';
+import 'src/dotted_line_2.dart';
 
 void main() {
   runApp(MyApp());
@@ -59,17 +59,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
         appBar: AppBar(
           title: Text('Icon Stepper Example'),
         ),
-        body: Column(
-          children: [
-            Text(
-              '5th part of: ${partOf(
-                length: 2980,
-                howManyParts: 5,
-                whichPart: 0
-              )}',
-            )
-          ],
-        ),
+        body: DottedLine2(),
       ),
     );
   }

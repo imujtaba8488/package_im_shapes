@@ -4,19 +4,19 @@ class Circle {
   /// The radius of the circle.
   double radius;
 
-  /// The location of the center of the circle in x,y plane.
+  /// The location of the center of the circle in X, Y plane.
   Offset center;
 
   Circle({@required this.radius, @required this.center});
 
-  /// Returns the circumference of a circle with the given radius.
-  static double circumference(double radius) => 2 * pi * radius;
+  /// Returns the circumference of a circle.
+  double get circumference => 2 * pi * radius;
 
-  /// Returns the diameter of the circle with the given radius.
-  static double diameter(double radius) => radius * radius;
+  /// Returns the diameter of the circle.
+  double get diameter => radius * radius;
 
-  /// Returns the area of a circle with the given radius.
-  static double area(double radius) => pi * radius * radius;
+  /// Returns the area of a circle.
+  double get area => pi * radius * radius;
 
   /// Returns a list of coordinates representing the coordinates of sectors, when a circle is divided into [numberOfSectors] sectors.
   ///

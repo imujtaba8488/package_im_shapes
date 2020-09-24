@@ -1,6 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-import 'dart:math' as math;
+import 'custom_painter_util/im_util.dart';
 
 class CircleWorld extends StatelessWidget {
   final int numberOfSectors;
@@ -30,6 +32,7 @@ class CircleWorld extends StatelessWidget {
 class CircleWorldPainter extends CustomPainter {
   int numberOfSectors;
   Paint brush;
+  Circle circle;
 
   CircleWorldPainter({this.numberOfSectors = 3}) {
     brush = Paint()
@@ -39,22 +42,18 @@ class CircleWorldPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Offset center = size.center(Offset(0.0, 0.0));
-    double radius = size.width / 2.0;
-
-    // drawGuideCircle(canvas, size);
-
-    List<Coordinate> coordinates = getSectorCoordinates(
-      numberOfSectors: numberOfSectors,
-      center: center,
-      radius: radius / 1.5,
+    circle = Circle(
+      radius: size.width / 2,
+      center: size.center(Offset(0.0, 0.0)),
     );
 
-    List<Coordinate> coordinates2 = getSectorCoordinates(
-      numberOfSectors: numberOfSectors,
-      center: center,
-      radius: radius,
-    );
+    drawGuideCircle(canvas, circle);
+
+    List<Point> coordinates =
+        circle.sectorCoordinates(numberOfSectors: numberOfSectors);
+
+    List<Point> coordinates2 =
+        circle.sectorCoordinates(numberOfSectors: numberOfSectors);
 
     Path path2 = Path()
       ..moveTo(
@@ -88,7 +87,7 @@ class CircleWorldPainter extends CustomPainter {
     canvas.drawPath(path, brush..style = PaintingStyle.fill);
   }
 
-  void drawGuidePoints(Canvas canvas, Coordinate coordinate) {
+  void drawGuidePoints(Canvas canvas, Point coordinate) {
     canvas.drawCircle(
       Offset(coordinate.x, coordinate.y),
       3,
@@ -96,10 +95,10 @@ class CircleWorldPainter extends CustomPainter {
     );
   }
 
-  void drawGuideCircle(Canvas canvas, Size size) {
+  void drawGuideCircle(Canvas canvas, Circle circle) {
     canvas.drawCircle(
-      size.center(Offset(0.0, 0.0)),
-      size.width / 2.0,
+      circle.center,
+      circle.radius,
       Paint()
         ..color = Colors.grey
         ..style = PaintingStyle.stroke,
@@ -108,33 +107,4 @@ class CircleWorldPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CircleWorldPainter oldDelegate) => false;
-
-  List<Coordinate> getSectorCoordinates({
-    @required int numberOfSectors,
-    @required double radius,
-    @required Offset center,
-  }) {
-    double angle = 0;
-    List<Coordinate> coordinates = List();
-
-    for (int i = 0; i < numberOfSectors; i++) {
-      angle = i * (360 / numberOfSectors);
-
-      Coordinate coordinate = Coordinate();
-
-      coordinate.x = center.dx + (radius * (math.cos(toRadians(angle))));
-      coordinate.y = center.dx + (radius * (math.sin(toRadians(angle))));
-
-      coordinates.add(coordinate);
-    }
-
-    return coordinates;
-  }
-
-  double toRadians(double angleInDegress) => angleInDegress * math.pi / 180;
-}
-
-class Coordinate {
-  double x;
-  double y;
 }
