@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:im_shapes/src/drop.dart';
-import 'package:im_shapes/src/math_extended/math_extended.dart';
+
+import 'src/custom_painter_util/im_util.dart';
 
 void main() {
   runApp(MyApp());
@@ -60,11 +61,13 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
         ),
         body: Column(
           children: [
-            Text('Degrees to Radians:  ${toRadians(60)}'),
-            Text('Radians to Degrees: ${toDegrees(toRadians(60))}'),
-            Text('Radius: ${CircleMaths.radiusFromCircumference(20)}'),
             Text(
-                'Circumference: ${CircleMaths.circumference(CircleMaths.radiusFromCircumference(20))}')
+              '5th part of: ${partOf(
+                length: 2980,
+                howManyParts: 5,
+                whichPart: 0
+              )}',
+            )
           ],
         ),
       ),

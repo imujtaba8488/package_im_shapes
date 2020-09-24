@@ -1,27 +1,27 @@
-part of 'math_extended.dart';
+part of 'im_util.dart';
 
-class CircleMaths {
-  static double radiusFromCircumference(double circumference) =>
-      circumference / (2 * pi);
+class Circle {
+  /// The radius of the circle.
+  double radius;
 
+  /// The location of the center of the circle in x,y plane.
+  Offset center;
+
+  Circle({@required this.radius, @required this.center});
+
+  /// Returns the circumference of a circle with the given radius.
   static double circumference(double radius) => 2 * pi * radius;
 
+  /// Returns the diameter of the circle with the given radius.
   static double diameter(double radius) => radius * radius;
 
-  static double radius(double diameter) => diameter / 2;
-
+  /// Returns the area of a circle with the given radius.
   static double area(double radius) => pi * radius * radius;
 
   /// Returns a list of coordinates representing the coordinates of sectors, when a circle is divided into [numberOfSectors] sectors.
   ///
   /// [numberOfSectors]: The number of sectors into which to divide the circle.
-  /// [radius]: The radius of the circle.\
-  /// [center]: The location of the center of the circle.
-  static List<Point> getSectorCoordinates({
-    @required int numberOfSectors,
-    @required double radius,
-    @required Offset center,
-  }) {
+  List<Point> sectorCoordinates({@required int numberOfSectors}) {
     double angle = 0;
     List<Point<double>> coordinates = List();
 
@@ -38,4 +38,8 @@ class CircleMaths {
 
     return coordinates;
   }
+
+  /// Returns the radius of the circle with the given circumference.
+  static double radiusFromCircumference(double circumference) =>
+      circumference / (2 * pi);
 }
