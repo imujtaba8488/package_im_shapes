@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:im_shapes/src/drop.dart';
 
-import 'src/dotted_line_2.dart';
-
 void main() {
   runApp(MyApp());
 }
@@ -21,10 +19,12 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
 
   bool inflated = false;
 
+  double value = 0.0;
+
   @override
   void initState() {
     controller = AnimationController(
-      duration: Duration(seconds: 1),
+      duration: Duration(seconds: 20),
       vsync: this,
     )..addListener(() {
         setState(() {});
@@ -42,15 +42,15 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    // animation = TweenSequence(
-    //   [
-    //     TweenSequenceItem(tween: Tween(begin: 0.0, end: 20.0), weight: 1),
-    //     TweenSequenceItem(tween: Tween(begin: 20.0, end: 0.0), weight: 1),
-    //   ],
-    // ).animate(CurvedAnimation(
-    //   curve: Curves.ease,
-    //   parent: controller,
-    // ));
+    animation = TweenSequence(
+      [
+        TweenSequenceItem(tween: Tween(begin: 0.0, end: 100.0), weight: 1),
+        // TweenSequenceItem(tween: Tween(begin: 20.0, end: 0.0), weight: 1),
+      ],
+    ).animate(CurvedAnimation(
+      curve: Curves.ease,
+      parent: controller,
+    ));
 
     // height = animation.isCompleted ? 100.0 : 130;
 
@@ -59,7 +59,6 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
         appBar: AppBar(
           title: Text('Icon Stepper Example'),
         ),
-        body: Drop(),
       ),
     );
   }

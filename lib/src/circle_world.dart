@@ -47,18 +47,19 @@ class CircleWorldPainter extends CustomPainter {
       center: size.center(Offset(0.0, 0.0)),
     );
 
-    drawGuideCircle(canvas, circle);
+    // drawGuideCircle(canvas, circle);
 
     List<Point> coordinates =
         circle.sectorCoordinates(numberOfSectors: numberOfSectors);
 
-    List<Point> coordinates2 =
-        circle.sectorCoordinates(numberOfSectors: numberOfSectors);
+    List<Point> coordinates2 = circle.sectorCoordinates(
+      numberOfSectors: numberOfSectors,
+    );
 
     Path path2 = Path()
       ..moveTo(
-        coordinates2[numberOfSectors - 1].x,
-        coordinates2[numberOfSectors - 1].y,
+        coordinates2[coordinates2.length - 1].x,
+        coordinates2[coordinates2.length - 1].y,
       );
 
     for (int i = 0; i < coordinates2.length; i++) {
@@ -72,19 +73,19 @@ class CircleWorldPainter extends CustomPainter {
       Paint()..color = Colors.blueGrey[400],
     );
 
-    Path path = Path()
-      ..moveTo(
-        coordinates[numberOfSectors - 1].x,
-        coordinates[numberOfSectors - 1].y,
-      );
+    // Path path = Path()
+    //   ..moveTo(
+    //     coordinates[numberOfSectors - 1].x,
+    //     coordinates[numberOfSectors - 1].y,
+    //   );
 
-    for (int i = 0; i < coordinates.length; i++) {
-      // drawGuidePoints(canvas, coordinates[i]);
+    // for (int i = 0; i < coordinates.length; i++) {
+    //   // drawGuidePoints(canvas, coordinates[i]);
 
-      path..lineTo(coordinates[i].x, coordinates[i].y);
-    }
+    //   path..lineTo(coordinates[i].x, coordinates[i].y);
+    // }
 
-    canvas.drawPath(path, brush..style = PaintingStyle.fill);
+    // canvas.drawPath(path, brush..style = PaintingStyle.fill);
   }
 
   void drawGuidePoints(Canvas canvas, Point coordinate) {
